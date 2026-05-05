@@ -1,0 +1,25 @@
+{
+  "name": "game-danh-bai-online-13-la",
+  "version": "1.0.0",
+  "description": "Game danh bai online bai Tay 13 la moi nguoi, dung Node.js, Socket.IO va SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "game",
+    "card",
+    "socket.io",
+    "sqlite",
+    "online"
+  ],
+  "author": "Le Hai",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "express": "^4.18.3",
+    "socket.io": "^4.7.5"
+  }
+}

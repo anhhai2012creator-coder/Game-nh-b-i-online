@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Đánh Bài Online 13 Lá</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>Game Đánh Bài Online</h1>
+        <p>Bài Tây 13 lá/người - chơi realtime có database</p>
+      </div>
+      <div id="playerBox" class="player-box">Chưa đăng nhập</div>
+    </header>
+
+    <section id="loginScreen" class="panel login-panel">
+      <h2>Đăng nhập</h2>
+      <p>Nhập tên người chơi. Nếu tên chưa có trong database, hệ thống sẽ tự tạo.</p>
+      <div class="row">
+        <input id="usernameInput" type="text" placeholder="Ví dụ: Hai" maxlength="20" />
+        <button id="loginBtn">Vào game</button>
+      </div>
+    </section>
+
+    <main id="gameScreen" class="game hidden">
+      <aside class="panel sidebar">
+        <h2>Phòng chơi</h2>
+        <div class="row">
+          <input id="roomNameInput" type="text" placeholder="Tên phòng mới" />
+          <button id="createRoomBtn">Tạo</button>
+        </div>
+        <div id="roomList" class="room-list"></div>
+      </aside>
+
+      <section class="panel table-panel">
+        <div class="table-header">
+          <div>
+            <h2 id="roomTitle">Chưa vào phòng</h2>
+            <p id="roomStatus">Hãy chọn hoặc tạo phòng</p>
+          </div>
+          <div class="actions">
+            <button id="startGameBtn">Bắt đầu</button>
+            <button id="resetGameBtn" class="secondary">Reset</button>
+          </div>
+        </div>
+
+        <div id="messageBox" class="message-box">Sẵn sàng.</div>
+
+        <h3>Người chơi</h3>
+        <div id="players" class="players"></div>
+
+        <h3>Bài vừa đánh</h3>
+        <div id="lastPlay" class="last-play empty">Chưa có bài trên bàn</div>
+
+        <h3>Bài của bạn</h3>
+        <div id="myHand" class="hand"></div>
+
+        <div class="bottom-actions">
+          <button id="playBtn">Đánh bài đã chọn</button>
+          <button id="passBtn" class="secondary">Bỏ lượt</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
