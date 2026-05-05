@@ -436,7 +436,37 @@ io.on('connection', socket => {
     emitRoom(roomId);
   });
 });
+ socket.on('disconnect', () => {
+    const user = socket.data.user;
+    const roomId = socket.data.roomId;
 
+    if (!user || !roomId) return;
+
+    db.prepare(`
+      DELETE FROM room_players
+      WHERE room_id = ? AND user_id = ?
+    `).run(roomId, user.id);
+
+    const remainingPlayers = db.prepare(`
+      SELECT COUNT(*) AS total
+      FROM room_players
+      WHERE room_id = ?
+    `).get(roomId).total;
+
+    if (remainingPlayers === 0) {
+      db.prepare(`
+        UPDATE rooms
+        SET status = 'waiting',
+            current_turn_user_id = NULL,
+            last_play_user_id = NULL,
+            last_play_cards = '[]'
+        WHERE id = ?
+      `).run(roomId);
+    }
+
+    logAction(roomId, user.id, 'leave_room', { username: user.username });
+    emitRoom(roomId);
+  });
 server.listen(PORT, () => {
   console.log(`Server dang chay tai http://localhost:${PORT}`);
 });
