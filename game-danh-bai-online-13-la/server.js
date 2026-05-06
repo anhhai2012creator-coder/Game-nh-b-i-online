@@ -65,22 +65,102 @@ function getHighest(cards) {
   return sortCards(cards)[cards.length - 1];
 }
 
-function isSameRankGroup(cards) {
-  if (cards.length === 1) return true;
-  return new Set(cards.map(card => card.rank)).size === 1;
+function getPlayType(cards) {
+  if (!cards.length) return null;
+
+  const sorted = sortCards(cards);
+  const values = sorted.map(card => card.value);
+  const ranks = sorted.map(card => card.rank);
+
+  const blockedRanks = ['J', 'Q', 'K', 'A', '2'];
+  const hasBlockedRank = ranks.some(rank => blockedRanks.includes(rank));
+
+  if (cards.length === 1) {
+    return {
+      type: 'single',
+      highCard: getHighest(cards)
+    };
+  }
+
+  const isSameRank = new Set(ranks).size === 1;
+
+  if (isSameRank) {
+    return {
+      type: `same-${cards.length}`,
+      highCard: getHighest(cards)
+    };
+  }
+
+  const uniqueValues = [...new Set(values)];
+
+  if (uniqueValues.length !== values.length) {
+    return null;
+  }
+
+  const isNormalStraight =
+    cards.length >= 3 &&
+    !hasBlockedRank &&
+    values.every((value, index) => {
+      if (index === 0) return true;
+      return value === values[index - 1] + 1;
+    });
+
+  if (isNormalStraight) {
+    return {
+      type: `straight-${cards.length}`,
+      highCard: getHighest(cards)
+    };
+  }
+
+  const isOddStraight =
+    cards.length >= 3 &&
+    !hasBlockedRank &&
+    values.every(value => value % 2 === 1) &&
+    values.every((value, index) => {
+      if (index === 0) return true;
+      return value === values[index - 1] + 2;
+    });
+
+  if (isOddStraight) {
+    return {
+      type: `odd-straight-${cards.length}`,
+      highCard: getHighest(cards)
+    };
+  }
+
+  const isEvenStraight =
+    cards.length >= 3 &&
+    !hasBlockedRank &&
+    values.every(value => value % 2 === 0) &&
+    values.every((value, index) => {
+      if (index === 0) return true;
+      return value === values[index - 1] + 2;
+    });
+
+  if (isEvenStraight) {
+    return {
+      type: `even-straight-${cards.length}`,
+      highCard: getHighest(cards)
+    };
+  }
+
+  return null;
 }
 
 function isValidPlay(selectedCards, lastPlayCards) {
   if (!selectedCards.length) return false;
-  if (!isSameRankGroup(selectedCards)) return false;
+
+  const selectedPlay = getPlayType(selectedCards);
+  if (!selectedPlay) return false;
 
   if (!lastPlayCards.length) return true;
-  if (selectedCards.length !== lastPlayCards.length) return false;
 
-  const selectedHigh = getHighest(selectedCards);
-  const lastHigh = getHighest(lastPlayCards);
+  const lastPlay = getPlayType(lastPlayCards);
+  if (!lastPlay) return false;
 
-  return cardPower(selectedHigh) > cardPower(lastHigh);
+  if (selectedPlay.type !== lastPlay.type) return false;
+
+  return cardPower(selectedPlay.highCard) > cardPower(lastPlay.highCard);
 }
 
 function getUserByName(username) {
