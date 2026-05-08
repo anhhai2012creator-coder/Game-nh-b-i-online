@@ -72,8 +72,16 @@ function getPlayType(cards) {
   const values = sorted.map(card => card.value);
   const ranks = sorted.map(card => card.rank);
 
-  const blockedRanks = ['J', 'Q', 'K', 'A', '2'];
-  const hasBlockedRank = ranks.some(rank => blockedRanks.includes(rank));
+const blockedNormalStraightRanks = ['2'];
+const blockedOddEvenStraightRanks = ['J', 'Q', 'K', 'A', '2'];
+
+const hasBlockedNormalStraightRank = ranks.some(rank =>
+  blockedNormalStraightRanks.includes(rank)
+);
+
+const hasBlockedOddEvenStraightRank = ranks.some(rank =>
+  blockedOddEvenStraightRanks.includes(rank)
+);
 
   if (cards.length === 1) {
     return {
@@ -99,7 +107,7 @@ function getPlayType(cards) {
 
   const isNormalStraight =
     cards.length >= 3 &&
-    !hasBlockedRank &&
+!hasBlockedNormalStraightRank &&
     values.every((value, index) => {
       if (index === 0) return true;
       return value === values[index - 1] + 1;
@@ -114,7 +122,7 @@ function getPlayType(cards) {
 
   const isOddStraight =
     cards.length >= 3 &&
-    !hasBlockedRank &&
+!hasBlockedOddEvenStraightRank &&
     values.every(value => value % 2 === 1) &&
     values.every((value, index) => {
       if (index === 0) return true;
@@ -130,7 +138,7 @@ function getPlayType(cards) {
 
   const isEvenStraight =
     cards.length >= 3 &&
-    !hasBlockedRank &&
+!hasBlockedOddEvenStraightRank &&
     values.every(value => value % 2 === 0) &&
     values.every((value, index) => {
       if (index === 0) return true;
